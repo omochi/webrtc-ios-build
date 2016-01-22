@@ -2,62 +2,170 @@
 
 This is build helper tool for [webrtc_ios](https://webrtc.org/native-code/ios/).
 
-This script generate headers (.h) and many fat static libraries (.a).
-Each libraries contain armv7 and arm64 for device, i386 and x86_64 for simulator.
+## features
+
+- It provides header files to be include.
+
+- It provides many fat static libraries. (armv7, arm64, i386, x86-64)
+
+- It provides xcode-project for use it as framework (dynamic library).
+
+- It provides bitcode support.
 
 # Usage
 
-First, download webrtc_ios source code following [official instructions](https://webrtc.org/native-code/development/).
+## fetch webrtc_ios
 
-You have 2 options whether bitcode embedding is enable or not (in xcode, its repesents as `ENABLE_BITCODE` setting).
+Download webrtc_ios sources by following [official instructions](https://webrtc.org/native-code/development/).
+I recommend `webrtc_ios` as destination path .
 
-## Enabling bitcode
-
-This tool enable embedding bitcode default.
-
-Unfortunately chromium team may not support bitcode now,
-I need little hack to gyp in webrtc source repository.
-
-- [Disable ENABLE_BITCODE for iOS 9.](https://groups.google.com/a/chromium.org/forum/#!topic/chromium-reviews/MEca51xoey8)
-
-I think my hack is not stable, but I want.
-Because Apple recommend us to support bitcode.
-So this mode is default.
-
-## Disabling bitcode
-
-To disable bitcode, append `--disable-bitcode` option to command described below.
-
-This mode does not modify webrtc source repository. (Because this is their default)
-
---
-
-Open this repository in terminal and run script.
+Or, run my fetching script. It was written with reference to above.
 
 ```
-$ ./webrtc-ios-build.rb --webrtc <webrtc_dir> [--disable-bitcode]
+$ ./fetch-webrtc-ios.bash
 ```
 
-`webrtc_dir` is webrtc_ios root directory in which you run `fetch webrtc_ios` (not `src`).
+It takes about 3 hours in my environment.
 
-`--disable-bitcode` indicates to disable bitcode embedding.
+## build all
 
-After long time build finish, 
-you can get header files in `out/include` and 
-a lot of static libraries such as `out/lib/lib*.a`.
+Build all by this script.
+
+```
+$ ./webrtc-ios-build.bash
+```
+
+It references `webrtc_ios` as webrtc_ios sources for default.
+
+You can specify webrtc_ios directory with `--webrtc` option.
+
+It takes about 40 minutes in my environment.
+
+## install to your project
+
+There are 2 options.
+One is using library as framework (dynamic library).
+I recommend it. But it may not be stable.
+
+The other is using library as static library.
+
+### install as framework
+
+Copy them into your project.
+
+- `out/include`
+- `out/lib`
+- `framework-project`
+
+**Keep their relative location.**
+
+In xcode, add `framework-project/webrtc.xcodeproj` as subproject.
+In application target `General` tab, set its product to `Embedded Binaries`.
+In application target `Build Settings` tab, add them below to `Header Search Paths`.
+
+- `out/include`
+- `out/include/talk/app/webrtc/objc` (If you want to use Objective-C items)
+
+### install as static libraries
+
+Copy them into your project.
+
+- `out/include`
+- `out/lib`
+
+In xcode, add all static libraries in `out/lib` to project.
+In application target `Build Settings` tab,
+add `out/lib` to `Library Search Paths`.
+add items to `Header Search Paths` same as framework cases. 
+
+## options
+
+You can disable embedding bitcode by `--disable-bitcode` option.
+This is google's configuration.
+
+## clean
+
+You can clean all by delete `out`.
+This script skips each step if directory exists.
+So you can retry specific step by delete a directory.
+
+- `out/project-ninja/$platform-$arch` is made by each build (compile).
+- `out/lib` is made by generating fat lib step.
+- `out/include` is made by header copy step.
 
 # Example
 
-`example/AppRTCDemo/AppRTCDemo.xcodeproj` is example xcode project I made to build googles example webrtc application source code with library this tool built.
-Original source is `webrtc_ios/src/webrtc/examples/objc/AppRTCDemo` without xcode project.
+I configured example project with Google's `AppRTCDemo` example at `example/AppRTCDemo`.
+It references `framework-project` and `out` directory.
+But in your case, copy them to appropriate location.
 
-# Other functions
+# Internal Detail
 
-You can clean outputs.
+This script is written by ruby.
+
+## Bitcode support
+
+Unfortunately chromium team may not support bitcode now.
+This link relates it.
+
+- [Disable ENABLE_BITCODE for iOS 9.](https://groups.google.com/a/chromium.org/forum/#!topic/chromium-reviews/MEca51xoey8)
+
+So this script patch gyp in webrtc source repository to support this option.
+gyp is meta build tool.
+
+And write option to gyp.
+
+## Symbol visibility change
+
+webrtc_ios focuses static library build.
+If it is linked into dynamic library,
+library symbols is hidden from dynamic libraries user.
+
+- [Controlling Symbol Visibility](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/CppRuntimeEnv/Articles/SymbolVisibility.html)
+
+This script remove `-fvisibility=hidden` from compile flags by modifing gyp.
+
+## Force to be fat
+
+Some libraries built only specific archtectures.
+Xcode warns lack of archtecture in fat library.
+This script makes dummy library contains such code.
 
 ```
-$ ./webrtc-ios-build.rb clean
+int libvpx_intrinsics_sse2_dummy_symbol() { return 0; }
 ```
+
+## Bug avoidance
+
+It removed compile targets which is specified twice.
+
+# Success report
+
+You can switch webrtc_ios version.
+
+```
+$ cd webrtc_ios/src
+$ git checkout <commit>
+$ gclient sync
+```
+
+This commit can built.
+
+```
+* commit e373dc20c4f6446dedfd885724032de1a10d8e39 (origin/master, origin/HEAD)
+| Author: hjon <hjon@andyet.net>
+| Date:   Fri Jan 22 14:04:27 2016 -0800
+| 
+|     Update API for Objective-C RTCDataChannel.
+|     
+|     BUG=
+|     
+|     Review URL: https://codereview.webrtc.org/1545393003
+|     
+|     Cr-Commit-Position: refs/heads/master@{#11362}
+|  
+```
+
 
 
 

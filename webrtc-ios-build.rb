@@ -5,33 +5,13 @@ require "optparse"
 require "shellwords"
 require "set"
 
+require_relative "lib/common-gypi-patcher.rb"
+require_relative "lib/xcode-bitcode-patcher.rb"
+require_relative "lib/rtc-base-objc-patcher.rb"
+
 # platform: iphone, iphone-simulator
 # arch: armv7, arm64, i386, x86_64
 # configuration: Debug, Release
-
-class CommonGypi
-	attr_reader :file
-	attr_reader :lines
-	def initialize(file)
-		@file = file
-		@lines = file.readlines
-	end
-	def save
-		text = lines.join("")
-		file.binwrite(text)
-	end
-	def set_enable_bitcode(value)
-		value_str = value ? "YES" : "NO"
-		regex = /'ENABLE_BITCODE': '([\w]*)'/
-		for line in lines
-			m = regex.match(line)
-			if ! m
-				next
-			end
-			line[m.begin(1)...m.end(1)] = value_str
-		end
-	end
-end
 
 class App
 	attr_reader :script_dir
@@ -44,6 +24,9 @@ class App
 	attr_reader :bitcode_enabled
 	attr_reader :verbose
 
+	def webrtc_src_dir
+		webrtc_dir + "src"
+	end
 	def xcode_platform
 		case platform
 		when "iphone"
@@ -56,9 +39,6 @@ class App
 	end
 	def xcode_arch
 		arch
-	end
-	def gyp_dir
-		webrtc_dir + "src/tools/gyp"
 	end
 	def main
 		@verbose = false
@@ -121,21 +101,26 @@ class App
 	def include_dir
 		output_dir + "include"
 	end
+	def framework_build_dir
+		output_dir + "framework-xcode-build"
+	end
+	def framework_build_target_dir
+		framework_build_dir + "#{platform}-#{arch}"
+	end
+	def framework_build_configured_target_dir
+		framework_build_target_dir + "#{configuration}-#{xcode_platform}"
+	end
 	def build
 		if webrtc_dir == nil
-			raise "webrtc is nil"
+			@webrtc_dir = script_dir + "webrtc_ios"
+			puts "webrtc_dir set default: #{webrtc_dir.to_s}"
 		end
 
-		if bitcode_enabled
-			cmd = [(script_dir + "patch-gyp.rb").to_s, 
-				gyp_dir.to_s].shelljoin
-			exec(cmd)
+		if ! webrtc_src_dir.exist?
+			raise "webrtc src dir not found: #{webrtc_src_dir.to_s}"
 		end
 
-		project_source = CommonGypi.new(webrtc_dir + "src/build/common.gypi")
-		project_source.set_enable_bitcode(bitcode_enabled)
-		project_source.save
-		puts "update project source: #{project_source.file.to_s}"
+		patch_sources
 
 		make_output_dir
 
@@ -161,6 +146,12 @@ class App
 				all_lib_names << lib_name
 			end
 		end
+		lib_blacklist = Set[
+			"libapprtc_common.a",
+			"libapprtc_signaling.a",
+			"libsocketrocket.a"
+		]
+		all_lib_names -= lib_blacklist 
 
 		lib_dir.mkpath
 		for lib_name in all_lib_names
@@ -181,7 +172,13 @@ class App
 			end
 		end
 
-		Dir.chdir((webrtc_dir + "src").to_s)
+		# for target in targets
+		# 	set_target(*target)
+
+		# 	build_framework_target
+		# end
+
+		Dir.chdir(webrtc_src_dir.to_s)
 		if ! include_dir.exist?
 			puts "copy headers"	
 			for file_str in Dir.glob(["webrtc/**/*", "talk/**/*"]).each
@@ -194,6 +191,13 @@ class App
 				end
 			end
 		end
+	end
+	def patch_sources
+		patcher = CommonGypiPatcher.new
+		patcher.var_enable_bitcode = bitcode_enabled ? "YES" : "NO"
+		patcher.patch(webrtc_src_dir + "build/common.gypi")
+		(XcodeBitcodePatcher.new).patch(webrtc_src_dir + "tools/gyp/pylib/gyp/xcode_emulation.py")
+		(RtcBaseObjcPatcher.new).patch(webrtc_src_dir + "webrtc/base/base.gyp")
 	end
 	def build_target
 		output_dir = project_target_dir
@@ -224,7 +228,7 @@ class App
 			ENV["GYP_GENERATOR_FLAGS"] = "output_dir=\"#{output_dir.to_s}\""
 			ENV["GYP_GENERATORS"] = "ninja"
 
-			Dir.chdir(webrtc_dir + "src")
+			Dir.chdir(webrtc_src_dir)
 			exec(["webrtc/build/gyp_webrtc"].shelljoin)
 		end
 		if ! (project_configured_target_dir + "AppRTCDemo.app").exist?
@@ -241,6 +245,28 @@ class App
 			["-output", fat_lib.to_s]
 		exec(cmd.shelljoin)
 	end
+	def build_framework_target
+		dir = framework_build_target_dir
+		dir.mkpath
+		Dir.chdir((script_dir + "framework-project").to_s)
+
+		log_file = dir + "build.log"
+		log_file.binwrite("")
+
+		cmd = ["xcodebuild", "-project", "webrtc.xcodeproj",
+			"-target", "webrtc",
+			"-configuration", configuration,
+			"-arch", xcode_arch,
+			"-sdk", xcode_sdk_path,
+			"SYMROOT=#{dir.to_s}"
+			].shelljoin
+		cmd = "#{cmd} >> #{log_file.to_s} 2>&1"
+		puts  "run xcodebuild (#{platform}, #{arch}, #{configuration})"
+		puts  "  log file: #{log_file.to_s}"
+		print "  waiting"
+		pid = exec_bg(cmd)
+		wait_with_dot(Process.detach(pid))
+	end
 	def clean
 		if output_dir.exist?
 			output_dir.rmtree
@@ -249,6 +275,9 @@ class App
 	end
 	def xcode_tool_path(name)
 		exec_capture(["xcrun", "-sdk", xcode_platform, "-f", name].shelljoin).strip
+	end
+	def xcode_sdk_path
+		exec_capture(["xcrun", "-sdk", xcode_platform, "--show-sdk-path"].shelljoin).strip
 	end
 	def compile_static_lib(sources, lib)
 		cc = xcode_tool_path("clang")
@@ -297,8 +326,22 @@ class App
 			raise "exec failed: status=#{$?}, command=#{command}"
 		end
 	end
+	def exec_bg(command)
+		pid = spawn(command)
+	end
 	def exec_capture(command)
 		`#{command}`
+	end
+	def wait_with_dot(pth)
+		while pth.alive?
+			sleep 1
+			print "."
+		end
+		print "\n"
+		ret = pth.value
+		if ret != 0
+			raise "exec failed: status=#{ret}"
+		end
 	end
 end
 
