@@ -5,6 +5,7 @@ require "optparse"
 require "shellwords"
 require "set"
 
+require_relative "lib/regex-patcher.rb"
 require_relative "lib/common-gypi-patcher.rb"
 require_relative "lib/xcode-bitcode-patcher.rb"
 require_relative "lib/rtc-base-objc-patcher.rb"
@@ -44,6 +45,7 @@ class App
 		@verbose = false
 		@webrtc_dir = nil
 		@bitcode_enabled = true
+		@jsoncpp_header = false
 
 		opt_parser = OptionParser.new
 		opt_parser.on("-v", "--verbose") {
@@ -54,6 +56,9 @@ class App
 		}
 		opt_parser.on("--disable-bitcode") {
 			@bitcode_enabled = false
+		}
+		opt_parser.on("--jsoncpp-header") {
+			@jsoncpp_header = true
 		}
 		opt_parser.parse!(ARGV)
 
@@ -178,18 +183,11 @@ class App
 		# 	build_framework_target
 		# end
 
-		Dir.chdir(webrtc_src_dir.to_s)
-		if ! include_dir.exist?
-			puts "copy headers"	
-			for file_str in Dir.glob(["webrtc/**/*", "talk/**/*"]).each
-				file = Pathname(file_str)
-				dest_file = include_dir + file
-				if file.directory?
-					dest_file.mkpath
-				elsif file.extname == ".h"
-					FileUtils.copy(file, dest_file)
-				end
-			end
+		copy_header_tree(webrtc_src_dir + "webrtc", include_dir)
+		copy_header_tree(webrtc_src_dir + "talk", include_dir)
+
+		if @jsoncpp_header
+			copy_jsoncpp_header_tree
 		end
 	end
 	def patch_sources
@@ -319,6 +317,36 @@ class App
 		source_path = lib.sub_ext(".c")
 		source_path.binwrite(code)
 		compile_static_lib([source_path], lib)
+	end
+	def copy_header_tree(src_dir, dest_root_dir, check: true)
+		dest_dir = dest_root_dir + src_dir.basename
+		if ! check || ! dest_dir.exist?
+			puts "copy header tree: #{src_dir.to_s}"
+			Dir.chdir(src_dir.to_s)
+			dest_dir.mkpath
+			for file_str in Dir.glob(["**/*"]).each
+				file = Pathname(file_str)
+				dest_file = dest_dir + file
+				if file.directory?
+					dest_file.mkpath
+				elsif file.extname == ".h"
+					FileUtils.copy(file, dest_file)
+				end
+			end
+			return true
+		end
+		return false
+	end
+	def copy_jsoncpp_header_tree
+		dir = webrtc_src_dir + "third_party/jsoncpp"
+		if copy_header_tree(dir + "source/include/json", include_dir)
+			copy_header_tree(dir + "overrides/include/json", include_dir, check: false)
+
+			patcher = RegexPatcher.new
+			patcher.regex = %r{third_party/jsoncpp/source/include/json/forwards\.h}
+			patcher.replace_func = -> (m) { 'forwards.h' }
+			patcher.patch(include_dir + "json/value.h")
+		end
 	end
 	def exec(command)
 		ret = system(command)
