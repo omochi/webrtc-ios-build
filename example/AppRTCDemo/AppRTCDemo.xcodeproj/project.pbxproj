@@ -536,6 +536,7 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/AppRTCDemo-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CFLAGS = "-DWEBRTC_IOS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.omochimetaru.AppRTCDemoiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -554,6 +555,7 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/AppRTCDemo-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_CFLAGS = "-DWEBRTC_IOS";
 				PRODUCT_BUNDLE_IDENTIFIER = com.omochimetaru.AppRTCDemoiOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

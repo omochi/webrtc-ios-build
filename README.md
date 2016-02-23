@@ -152,18 +152,21 @@ $ gclient sync
 This commit can built.
 
 ```
-* commit e373dc20c4f6446dedfd885724032de1a10d8e39 (origin/master, origin/HEAD)
-| Author: hjon <hjon@andyet.net>
-| Date:   Fri Jan 22 14:04:27 2016 -0800
+* commit ba3e25e50296518cccca4732b769e698dfc03365 (HEAD, origin/master, origin/HEAD, master)
+| Author: Peter Boström <pbos@webrtc.org>
+| Date:   Tue Feb 23 11:35:30 2016 +0100
 | 
-|     Update API for Objective-C RTCDataChannel.
+|     Simple RTCP receiver fuzzer.
 |     
-|     BUG=
+|     Doesn't utilize the clock or any callbacks out of the receiver but
+|     should still be useful to test input packet parsing.
 |     
-|     Review URL: https://codereview.webrtc.org/1545393003
+|     BUG=webrtc:4771
+|     R=danilchap@webrtc.org
 |     
-|     Cr-Commit-Position: refs/heads/master@{#11362}
-|  
+|     Review URL: https://codereview.webrtc.org/1716143002 .
+|     
+|     Cr-Commit-Position: refs/heads/master@{#11717}
 ```
 
 

@@ -1,0 +1,9 @@
+# Fetching webrtc taks too long time. 
+# So I suspended CI.
+
+language: objective-c
+osx_image: xcode7.2
+before_install: ./travis-install.bash
+xcode_project: ./ci-dummy-project/WebrtcIosBuild/WebrtcIosBuild.xcodeproj
+xcode_scheme: WebrtcIosBuild
+

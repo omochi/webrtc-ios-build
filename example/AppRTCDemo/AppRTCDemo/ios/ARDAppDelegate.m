@@ -10,12 +10,14 @@
 
 #import "ARDAppDelegate.h"
 
+#import "webrtc/base/objc/RTCTracing.h"
 #import "RTCLogging.h"
 #import "RTCPeerConnectionFactory.h"
 
 #import "ARDMainViewController.h"
 
 @implementation ARDAppDelegate {
+  UIWindow *_window;
 }
 
 #pragma mark - UIApplicationDelegate methods
@@ -23,6 +25,7 @@
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   [RTCPeerConnectionFactory initializeSSL];
+  RTCSetupInternalTracer();
   _window =  [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
   [_window makeKeyAndVisible];
   ARDMainViewController *viewController = [[ARDMainViewController alloc] init];
@@ -45,6 +48,7 @@
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
+  RTCShutdownInternalTracer();
   [RTCPeerConnectionFactory deinitializeSSL];
 }
 

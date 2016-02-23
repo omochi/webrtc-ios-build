@@ -14,5 +14,4 @@
 // interoperability between the Objective C implementation of PeerConnection
 // and the apprtc.appspot.com demo webapp.
 @interface ARDAppDelegate : NSObject <UIApplicationDelegate>
-@property(nonatomic, retain) UIWindow * window;
 @end

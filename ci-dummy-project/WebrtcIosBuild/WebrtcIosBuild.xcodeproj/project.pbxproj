@@ -1,0 +1,269 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		D631E7F71C894F1C00C195A5 /* WebrtcIosBuild.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = D631E7F61C894F1C00C195A5 /* WebrtcIosBuild.h */; };
+		D631E7F91C894F1C00C195A5 /* WebrtcIosBuild.m in Sources */ = {isa = PBXBuildFile; fileRef = D631E7F81C894F1C00C195A5 /* WebrtcIosBuild.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		D631E7F11C894F1C00C195A5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+				D631E7F71C894F1C00C195A5 /* WebrtcIosBuild.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		D631E7F31C894F1C00C195A5 /* libWebrtcIosBuild.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libWebrtcIosBuild.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		D631E7F61C894F1C00C195A5 /* WebrtcIosBuild.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebrtcIosBuild.h; sourceTree = "<group>"; };
+		D631E7F81C894F1C00C195A5 /* WebrtcIosBuild.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WebrtcIosBuild.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		D631E7F01C894F1C00C195A5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		D631E7EA1C894F1C00C195A5 = {
+			isa = PBXGroup;
+			children = (
+				D631E7F51C894F1C00C195A5 /* WebrtcIosBuild */,
+				D631E7F41C894F1C00C195A5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D631E7F41C894F1C00C195A5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D631E7F31C894F1C00C195A5 /* libWebrtcIosBuild.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D631E7F51C894F1C00C195A5 /* WebrtcIosBuild */ = {
+			isa = PBXGroup;
+			children = (
+				D631E7F61C894F1C00C195A5 /* WebrtcIosBuild.h */,
+				D631E7F81C894F1C00C195A5 /* WebrtcIosBuild.m */,
+			);
+			path = WebrtcIosBuild;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		D631E7F21C894F1C00C195A5 /* WebrtcIosBuild */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D631E7FC1C894F1C00C195A5 /* Build configuration list for PBXNativeTarget "WebrtcIosBuild" */;
+			buildPhases = (
+				D631E7FF1C894F6200C195A5 /* ShellScript */,
+				D631E7EF1C894F1C00C195A5 /* Sources */,
+				D631E7F01C894F1C00C195A5 /* Frameworks */,
+				D631E7F11C894F1C00C195A5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WebrtcIosBuild;
+			productName = WebrtcIosBuild;
+			productReference = D631E7F31C894F1C00C195A5 /* libWebrtcIosBuild.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		D631E7EB1C894F1C00C195A5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = omochimetaru;
+				TargetAttributes = {
+					D631E7F21C894F1C00C195A5 = {
+						CreatedOnToolsVersion = 7.2.1;
+					};
+				};
+			};
+			buildConfigurationList = D631E7EE1C894F1C00C195A5 /* Build configuration list for PBXProject "WebrtcIosBuild" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = D631E7EA1C894F1C00C195A5;
+			productRefGroup = D631E7F41C894F1C00C195A5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				D631E7F21C894F1C00C195A5 /* WebrtcIosBuild */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D631E7FF1C894F6200C195A5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "set -ueo pipefail\ncd \"$SRCROOT/../..\"\necho \"execute script [$(pwd)]\"\nsource ci-all-run.bash\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D631E7EF1C894F1C00C195A5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D631E7F91C894F1C00C195A5 /* WebrtcIosBuild.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		D631E7FA1C894F1C00C195A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		D631E7FB1C894F1C00C195A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D631E7FD1C894F1C00C195A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		D631E7FE1C894F1C00C195A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		D631E7EE1C894F1C00C195A5 /* Build configuration list for PBXProject "WebrtcIosBuild" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D631E7FA1C894F1C00C195A5 /* Debug */,
+				D631E7FB1C894F1C00C195A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D631E7FC1C894F1C00C195A5 /* Build configuration list for PBXNativeTarget "WebrtcIosBuild" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D631E7FD1C894F1C00C195A5 /* Debug */,
+				D631E7FE1C894F1C00C195A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = D631E7EB1C894F1C00C195A5 /* Project object */;
+}
